@@ -44,8 +44,24 @@
   border-color: cadetblue !important;
 }
 
+.lightmodealiceblue {
+  color: aliceblue
+}
+
 .block {
   border-color: aliceblue !important;
+}
+
+@media (prefers-color-scheme: light) {
+  .block {
+    border-color: midnightblue !important;
+  }
+  .lightmodealiceblue {
+    color: midnightblue;
+  }
+  .input {
+    background-color: #efefef;
+  }
 }
 
 .redMarker {

@@ -1,7 +1,10 @@
 import styles from '../styles/Home.module.css'
 import { useEffect, useState } from 'react'
+import usePrefersColorScheme from 'use-prefers-color-scheme'
 
 export default function Home() {
+    const prefesColorScheme = usePrefersColorScheme()
+
     const [xLength, setX] = useState(10)
     const [yLength, setY] = useState(10)
     const [zLength, setZ] = useState(3) //@ts-ignore
@@ -25,7 +28,7 @@ export default function Home() {
             for (let i = _value; i < zLength; i++) {
                 map[x][y][i] = 'n'
             }
-            if(_value > zLength) e.target.value = zLength
+            if (_value > zLength) e.target.value = zLength
             e.target.className = `${styles.input} ${styles.block}`
         } else if (value.startsWith('q')) {
             for (let i = 0; i < 2; i++) {
@@ -58,16 +61,16 @@ export default function Home() {
             map[x][y][zLength] = 'o'
         }
 
-        if(e.target.id == `${xPos} ${yPos}`) e.target.classList.add(styles.spawn)
+        if (e.target.id == `${xPos} ${yPos}`) e.target.classList.add(styles.spawn)
     }
 
     function donwloadMap() {
         let mapStr = `KarolVersion3.0 ${xLength} ${yLength} ${zLength} ${xPos} ${yPos} `
         mapStr +=
             dir == 'S' ? '0 ' :
-            dir == 'W' ? '1 ' : 
-            dir == 'N' ? '2 ' :
-            dir == 'O' ? '3 ' : '0 '
+                dir == 'W' ? '1 ' :
+                    dir == 'N' ? '2 ' :
+                        dir == 'O' ? '3 ' : '0 '
         mapStr += map.flat(3).join(' ')
         mapStr += ` ${xPos + 1} ${yPos + 1} ${dir}`
 
@@ -95,15 +98,13 @@ export default function Home() {
             }
         }
         setMap(newMap)
-        console.log('refresh0')
     }, [xLength, yLength, zLength, random])
 
     useEffect(() => {
         document.querySelectorAll(`.${styles.input}`).forEach((e) => {
-            if(e.classList.contains(styles.spawn)) e.classList.remove(styles.spawn)
+            if (e.classList.contains(styles.spawn)) e.classList.remove(styles.spawn)
         })
         document.getElementById(`${xPos} ${yPos}`)?.classList.add(styles.spawn)
-        console.log('refresh1')
     }, [xPos, yPos])
 
     useEffect(() => {
@@ -112,18 +113,21 @@ export default function Home() {
             e.className = styles.input
         })
         document.getElementById(`${xPos} ${yPos}`)?.classList.add(styles.spawn)
-        console.log('refresh2')
-    },[map])
+    }, [map])
 
     return (
         <div className={styles.container}>
-            <h2>Robot Karol Map Editor</h2>
+            <h2>Robot Karol Map Editor{prefesColorScheme == 'light' ? ' (CSS für Lightmode wird bald gefixt)' : ''}</h2>
+            {prefesColorScheme == 'light' ? <p>Benutz einfach den Darkmode :)</p> : ''}
             <div>
                 <div className={styles.settings}>
                     <div>
                         <form onSubmit={e => {
                             e.preventDefault() //@ts-ignore
-                            setX(Math.abs(e.target[0].value))
+                            setX(Math.abs(e.target.value))
+                        }} onBlur={e => {
+                            e.preventDefault() //@ts-ignore
+                            setX(Math.abs(e.target.value))
                         }}>
                             <label className={styles.label}>X</label>
                             <input type="number" placeholder='10' />
@@ -131,6 +135,9 @@ export default function Home() {
                         <form onSubmit={e => {
                             e.preventDefault() //@ts-ignore
                             setY(Math.abs(e.target[0].value))
+                        }} onBlur={e => {
+                            e.preventDefault() //@ts-ignore
+                            setY(Math.abs(e.target.value))
                         }}>
                             <label className={styles.label}>Y</label>
                             <input type="number" placeholder='10' />
@@ -138,6 +145,9 @@ export default function Home() {
                         <form onSubmit={e => {
                             e.preventDefault() //@ts-ignore
                             setZ(Math.abs(e.target[0].value))
+                        }} onBlur={e => {
+                            e.preventDefault() //@ts-ignore
+                            setZ(Math.abs(e.target.value))
                         }}>
                             <label className={styles.label}>Z</label>
                             <input type="number" placeholder='3' />
@@ -150,6 +160,12 @@ export default function Home() {
                             if (int >= xLength) int = xLength - 1
                             setXPos(int) //@ts-ignore
                             e.target[0].value = int
+                        }} onBlur={e => {
+                            e.preventDefault() //@ts-ignore
+                            let int = Math.abs(e.target.value)
+                            if (int >= xLength) int = xLength - 1
+                            setXPos(int) //@ts-ignore
+                            e.target.value = int
                         }
                         }>
                             <label className={styles.label}>X Position</label>
@@ -161,6 +177,12 @@ export default function Home() {
                             if (int >= yLength) int = yLength - 1
                             setYPos(int) //@ts-ignore
                             e.target[0].value = int
+                        }} onBlur={e => {
+                            e.preventDefault() //@ts-ignore
+                            let int = Math.abs(e.target.value)
+                            if (int >= yLength) int = yLength - 1
+                            setYPos(int) //@ts-ignore
+                            e.target.value = int
                         }
                         }>
                             <label className={styles.label}>Y Position</label>
@@ -169,10 +191,17 @@ export default function Home() {
                         <form onSubmit={e => {
                             e.preventDefault() //@ts-ignore
                             let str = e.target[0].value
-                            if(!/^[nNwWsSoO]$/.test(str)) str = 'N'
+                            if (!/^[nNwWsSoO]$/.test(str)) str = 'N'
                             else str = str.toUpperCase()
                             setDir(str) //@ts-ignore
                             e.target[0].value = str
+                        }} onBlur={e => {
+                            e.preventDefault() //@ts-ignore
+                            let str = e.target.value
+                            if (!/^[nNwWsSoO]$/.test(str)) str = 'N'
+                            else str = str.toUpperCase()
+                            setDir(str) //@ts-ignore
+                            e.target.value = str
                         }}>
                             <label className={styles.label}>Direction</label>
                             <input type="text" placeholder='N/W/S/O' />
@@ -203,17 +232,17 @@ export default function Home() {
                 <div className={styles.space} />
                 <button onClick={donwloadMap}>Download</button>
                 <span> </span>
-                <button onClick={() => {setRandom(Math.random)}}>Clear</button>
+                <button onClick={() => { setRandom(Math.random) }}>Clear</button>
                 <h4>Erklärungen</h4>
                 <ul>
                     <li>Leeres Feld: nichts</li>
-                    <li><span style={{color: 'cadetblue'}}>q</span>...: Quader</li>
-                    <li><span style={{color: 'aliceblue'}}>[int]...</span>: Höhe der zu platzierenden Ziegel</li>
-                    <li>...<span style={{color: 'crimson'}}>k</span>: Rote Markierung</li> 
-                    <li>...<span style={{color: 'goldenrod'}}>l</span>: Gelbe Markierung</li> 
-                    <li>...<span style={{color: 'cornflowerblue'}}>m</span>: Blaue Markierung</li>
-                    <li>...<span style={{color: 'olivedrab'}}>n</span>: Grüne Markierung</li>
-                    <li><span style={{color: 'mediumslateblue'}}>Lila Feld</span>: Spawnpoint</li>
+                    <li><span style={{ color: 'cadetblue' }}>q</span>...: Quader</li>
+                    <li><span className={styles.lightmodealiceblue}>[int]...</span>: Höhe der zu platzierenden Ziegel</li>
+                    <li>...<span style={{ color: 'crimson' }}>k</span>: Rote Markierung</li>
+                    <li>...<span style={{ color: 'goldenrod' }}>l</span>: Gelbe Markierung</li>
+                    <li>...<span style={{ color: 'cornflowerblue' }}>m</span>: Blaue Markierung</li>
+                    <li>...<span style={{ color: 'olivedrab' }}>n</span>: Grüne Markierung</li>
+                    <li><span style={{ color: 'mediumslateblue' }}>Lila Feld</span>: Spawnpoint</li>
                 </ul>
                 <h4>Beispiele</h4>
                 <ul>
