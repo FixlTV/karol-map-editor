@@ -4,8 +4,6 @@
 
 .mapY {
   width: 100%;
-  max-height: 70vh;
-  overflow: auto;
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: min-content;
